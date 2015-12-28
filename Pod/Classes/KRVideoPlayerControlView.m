@@ -205,7 +205,6 @@ static const CGFloat kVideoControlBarAutoFadeOutTimeinterval = 5.0;
     if (!_closeButton) {
         _closeButton = [UIButton buttonWithType:UIButtonTypeCustom];
         [_closeButton setImage:[UIImage imageNamed:[self videoImageName:@"kr-video-player-close"]] forState:UIControlStateNormal];
-        _closeButton.hidden = YES;// by zhanglei
         _closeButton.bounds = CGRectMake(0, 0, kVideoControlBarHeight, kVideoControlBarHeight);
     }
     return _closeButton;
