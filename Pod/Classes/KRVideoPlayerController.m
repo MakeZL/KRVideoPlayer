@@ -70,10 +70,21 @@ static const CGFloat kVideoPlayerControllerAnimationTimeinterval = 0.3f;
     [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
 }
 
+- (void)showInView:(UIView *)view{
+    [view addSubview:self.view];
+    self.view.alpha = 0.0;
+    [UIView animateWithDuration:kVideoPlayerControllerAnimationTimeinterval animations:^{
+        self.view.alpha = 1.0;
+    } completion:^(BOOL finished) {
+        
+    }];
+    [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
+}
+
 - (void)dismiss
 {
-    [self stopDurationTimer];
     [self stop];
+    [self stopDurationTimer];
     [UIView animateWithDuration:kVideoPlayerControllerAnimationTimeinterval animations:^{
         self.view.alpha = 0.0;
     } completion:^(BOOL finished) {
@@ -174,6 +185,9 @@ static const CGFloat kVideoPlayerControllerAnimationTimeinterval = 0.3f;
     if (self.isFullscreenMode) {
         return;
     }
+    if (self.fullScreenChangeCompleteBlock) {
+        self.fullScreenChangeCompleteBlock();
+    }
     self.originFrame = self.view.frame;
     CGFloat height = [[UIScreen mainScreen] bounds].size.width;
     CGFloat width = [[UIScreen mainScreen] bounds].size.height;
@@ -192,6 +206,9 @@ static const CGFloat kVideoPlayerControllerAnimationTimeinterval = 0.3f;
 {
     if (!self.isFullscreenMode) {
         return;
+    }
+    if (self.shrinkScreenChangeCompleteBlock) {
+        self.shrinkScreenChangeCompleteBlock();
     }
     [UIView animateWithDuration:0.3f animations:^{
         [self.view setTransform:CGAffineTransformIdentity];
@@ -248,7 +265,7 @@ static const CGFloat kVideoPlayerControllerAnimationTimeinterval = 0.3f;
 
 - (void)startDurationTimer
 {
-    self.durationTimer = [NSTimer scheduledTimerWithTimeInterval:0.2 target:self selector:@selector(monitorVideoPlayback) userInfo:nil repeats:YES];
+    self.durationTimer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(monitorVideoPlayback) userInfo:nil repeats:YES];
     [[NSRunLoop currentRunLoop] addTimer:self.durationTimer forMode:NSDefaultRunLoopMode];
 }
 
